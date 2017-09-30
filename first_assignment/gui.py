@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
+from PIL import Image, ImageTk
 
 class MyFrame(Frame):
     def __init__(self):
@@ -22,7 +23,9 @@ class MyFrame(Frame):
         if imgname:
             try:
                 print(imgname)
-
+                image = Image.open(imgname)
+                tkimage = ImageTk.PhotoImage(image)
+                #Label(image = tkimage).pack() erro aqui
             except:
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
             return
