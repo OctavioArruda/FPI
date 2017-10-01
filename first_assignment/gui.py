@@ -39,6 +39,10 @@ class MyFrame(Frame):
                 command = lambda: self.V_flip(image),width=10)
                 self.buttonVF.pack(side=LEFT, fill=BOTH, anchor = SW) # vertical flip button
 
+                self.buttonGS = Button(self,text="GrayScale",
+                command = lambda: self.GSFilter(image),width=10)
+                self.buttonGS.pack(side=LEFT, fill=BOTH, anchor = SW) # GS filter
+
                 mainloop()
             except:
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
@@ -56,6 +60,65 @@ class MyFrame(Frame):
         newimg = ImageOps.mirror(image)
         VFimg = ImageTk.PhotoImage(newimg)
         Label(image = VFimg).pack(side=LEFT)
+        mainloop()
+
+    # Create a new image with the given size
+    def create_image(self, i, j):
+        image = Image.new("RGB", (i, j), "white")
+        return image
+
+    def get_pixel(self, image, i, j):
+        # image bounds
+        width, height = image.size
+        if i > width or j > height:
+            return None
+
+        # get pixel
+        pixel = image.getpixel((i, j))
+        return pixel
+
+    # Create a Grayscale version of the image
+    def GSFilter(self, image):
+        # Get size
+        width, height = image.size
+
+        # Create new Image and a Pixel Map
+        new = self.create_image(width, height)
+        pixels = new.load()
+
+        # Transform to grayscale
+        for i in range(width):
+            for j in range(height):
+                # Get Pixel
+                pixel = self.get_pixel(image, i, j)
+
+                # Get R, G, B values (This are int from 0 to 255)
+                red =   pixel[0]
+                green = pixel[1]
+                blue =  pixel[2]
+
+                # Transform to grayscale
+                gray = (red * 0.299) + (green * 0.587) + (blue * 0.114)
+
+                # Set Pixel in new image
+                pixels[i, j] = (int(gray), int(gray), int(gray))
+
+
+        # Show image
+        GSimg = ImageTk.PhotoImage(new)
+        Label(image = GSimg).pack(side=LEFT)
+        mainloop()
+        # Return new image
+        return new
+
+        #pix =   image.load()
+        #print (image.size)
+        #pixels = list(image.getdata()) #lista pixels
+
+        #print("GrayScale Filter")
+        #newimg = ImageOps.grayscale(image)
+        #GSimg = ImageTk.PhotoImage(newimg)
+        #Label(image = GSimg).pack(side=LEFT)
         mainloop()
 
 if __name__=="__main__":
