@@ -28,7 +28,7 @@ class MyFrame(Frame):
                 print(imgname)
                 image = Image.open(imgname)
                 tkimage = ImageTk.PhotoImage(image)
-                Label(image = tkimage).pack()
+                Label(image = tkimage).pack(side=LEFT)
                 mainloop()
             except:
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
