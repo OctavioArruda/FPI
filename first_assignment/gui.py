@@ -9,11 +9,14 @@ class MyFrame(Frame):
         self.master.title("Image editor")
         self.master.rowconfigure(5, weight=1)
         self.master.columnconfigure(5, weight=1)
-        self.grid(padx=150, pady=150,sticky=W+E+N+S)
+        self.master.minsize(width = 500, height = 500)
+        #self.grid(padx=250, pady=250,sticky=W+E+N+S)
+        self.pack()
 
         self.button = Button(self, text="Open",
         command = self.load_img, width=10)
-        self.button.grid(row=1, column=0, sticky=W)
+        #self.button.grid(row=0, column=0,sticky=W+E+N+S)
+        self.button.pack()
 
     def load_img(self):
         imgname = askopenfilename(filetypes=(("JPG files", "*.jpg"),
@@ -25,7 +28,8 @@ class MyFrame(Frame):
                 print(imgname)
                 image = Image.open(imgname)
                 tkimage = ImageTk.PhotoImage(image)
-                #Label(image = tkimage).pack() erro aqui
+                Label(image = tkimage).pack()
+                mainloop()
             except:
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
             return
