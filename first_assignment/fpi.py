@@ -1,14 +1,14 @@
 from PIL import Image, ImageTk
-import tkinter as tk
+from tkinter import *
 
 ler = input("Deseja ler alguma imagem?")
 
-while(ler == "sim" or ler == "Sim" or ler == "SIM"):
+while(str.lower(ler) == "sim"):
 
     img_name = input("Nome da imagem por favor.")
     jpgfile = Image.open(img_name) # Abrindo a imagem
 
-    janela = tk.Tk()
+    janela = Tk()
     tkimage = ImageTk.PhotoImage(jpgfile)
     lblImg = tk.Label(janela, image = tkimage).pack()
     LblText = tk.Label(text = str(jpgfile.bits) + str(jpgfile.size) + str(jpgfile.format)).pack()
