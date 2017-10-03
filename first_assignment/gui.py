@@ -52,28 +52,52 @@ class MyFrame(Frame):
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
             return
 
-    def H_flip(self):
+    def H_flip(self): # horizontal flip with pixel by pixel operations
         global image
-        newimg = ImageOps.flip(image)
-        HFimg = ImageTk.PhotoImage(newimg)
+        width = image.size[0]
+        height = image.size[1]
+        for y in range(height):
+            for x in range(width // 2):
+                left = image.getpixel((x, y))
+                right = image.getpixel((width - 1 - x, y))
+                image.putpixel((width - 1 - x, y), left)
+                image.putpixel((x, y), right)
+
+        HFimg = ImageTk.PhotoImage(image)
         Label(image = HFimg).pack(side=LEFT)
-        image = newimg
         mainloop()
         return HFimg
 
     def V_flip(self):
         global image
-        newimg = ImageOps.mirror(image)
-        VFimg = ImageTk.PhotoImage(newimg)
+        width = image.size[0]
+        height = image.size[1]
+
+        for y in range(height // 2):
+            for x in range(width):
+                left = image.getpixel((x, y))
+                right = image.getpixel((x , height - y - 1))
+                image.putpixel((x, height - y -1), left)
+                image.putpixel((x, y), right)
+
+        VFimg = ImageTk.PhotoImage(image)
         Label(image = VFimg).pack(side=LEFT)
         mainloop()
-        image = newimg
         return VFimg
 
     # Create a new image with the given size
     def create_image(self, i, j):
         image = Image.new("RGB", (i, j), "white")
         return image
+
+    def set_pixel(self, image, i, j):
+        # image bounds
+        width, height = image.size
+        if i > width or j > height:
+            return None
+
+        pixel = image.setpixel((i, j))
+        return pixel
 
     def get_pixel(self, image, i, j):
         # image bounds
@@ -138,8 +162,7 @@ class MyFrame(Frame):
         EQuant.focus()
         EQuant.bind('<Return>', self.process_callback)
         EQuant.pack(side=LEFT)
-        print(numQT.get())
-        print(numQT)
+
         BTQT = Button(numQuant, text="Ok", command = lambda: self.QTFilter(num))
         BTQT.pack(side=RIGHT)
 
