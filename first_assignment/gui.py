@@ -3,7 +3,7 @@ from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
 from PIL import Image, ImageTk, ImageFilter, ImageOps
 
-image = Image.new('RGB', (800,1280), (255, 255, 255)) #global image                                             #global qt num
+image = Image.new('RGB', (800,1280), (255, 255, 255)) #global image
 
 class MyFrame(Frame):
     def __init__(self):
@@ -166,7 +166,6 @@ class MyFrame(Frame):
         image = new
 
         mainloop()
-
 
         return new
 
