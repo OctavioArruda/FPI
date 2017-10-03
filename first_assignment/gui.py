@@ -3,7 +3,7 @@ from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
 from PIL import Image, ImageTk, ImageFilter, ImageOps
 
-image = Image.new('RGB', (800,1280), (255, 255, 255)) #global img
+image = Image.new('RGB', (800,1280), (255, 255, 255)) #global image                                             #global qt num
 
 class MyFrame(Frame):
     def __init__(self):
@@ -43,9 +43,16 @@ class MyFrame(Frame):
                 command = self.GSFilter,width=10)
                 self.buttonGS.pack(side=LEFT, fill=BOTH, anchor = SW) # GS filter
 
-                self.buttonQT = Button(self, text="Quant",
-                command = self.QTFilter_num,width=10)
-                self.buttonQT.pack(side=LEFT, fill=BOTH, anchor = SW) # Image quantization
+                self.LblQT = Label(self, text = "QT number:") # label qt
+                self.LblQT.pack(side=LEFT)
+
+                self.EQT = Entry(self, bd =3, width = 5) # Image quantization
+                self.EQT.bind("<Return>",lambda num: self.QTFilter(num = self.EQT.get()))
+                self.EQT.pack(side=LEFT)
+
+                self.buttonQT = Button(self, text="Ok",
+                command = lambda: self.QTFilter(num = self.EQT.get()), width=5)
+                self.buttonQT.pack(side=LEFT, fill=BOTH, anchor = SW) # Image qt button
 
                 mainloop()
             except:
@@ -144,33 +151,9 @@ class MyFrame(Frame):
 
         return new
 
-    def process_callback(*args):
-
-    # figure out what the response to the input should be
-        response = process_command(entry.get())
-
-    def QTFilter_num(self):
-        # quantization number input
-        numQuant = Tk()
-        numQuant.title("Quantization")
-
-        LblQuant = Label(numQuant, text = "Quantization number:")
-        LblQuant.pack(side=LEFT)
-
-        numQT = IntVar()
-        EQuant = Entry(numQuant , bd=5, textvariable = numQT)
-        EQuant.focus()
-        EQuant.bind('<Return>', self.process_callback)
-        EQuant.pack(side=LEFT)
-
-        BTQT = Button(numQuant, text="Ok", command = lambda: self.QTFilter(num))
-        BTQT.pack(side=RIGHT)
-
-
     def QTFilter(self, num):
+        # quantization number input
         print(num)
-        global image
-
 
 if __name__=="__main__":
     MyFrame().mainloop()
