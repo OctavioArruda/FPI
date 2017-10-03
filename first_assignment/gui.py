@@ -11,7 +11,7 @@ class MyFrame(Frame):
         self.master.title("Image editor")
         self.master.rowconfigure(5, weight=1)
         self.master.columnconfigure(5, weight=1)
-        self.master.minsize(width = 500, height = 500)
+        self.master.minsize(width = 600, height = 500)
         self.pack()
 
         self.buttonLoad = Button(self, text="Open", # load img button
@@ -46,13 +46,25 @@ class MyFrame(Frame):
                 self.LblQT = Label(self, text = "QT number:") # label qt
                 self.LblQT.pack(side=LEFT)
 
-                self.EQT = Entry(self, bd =3, width = 5) # Image quantization
+                self.EQT = Entry(self, bd =3, width = 3) # Image quantization
                 self.EQT.bind("<Return>",lambda num: self.QTFilter(num = self.EQT.get()))
                 self.EQT.pack(side=LEFT)
 
                 self.buttonQT = Button(self, text="Ok",
                 command = lambda: self.QTFilter(num = self.EQT.get()), width=5)
                 self.buttonQT.pack(side=LEFT, fill=BOTH, anchor = SW) # Image qt button
+
+
+                self.LblSV = Label(self, text = "Save as:") # label qt
+                self.LblSV.pack(side=LEFT)
+
+                self.ESV = Entry(self, bd =3, width = 10) # Image quantization
+                self.ESV.bind("<Return>",lambda name: self.save_img(name = self.ESV.get()))
+                self.ESV.pack(side=LEFT)
+
+                self.buttonSV = Button(self, text="Save",
+                command = lambda: self.save_img(name = self.ESV.get()),width=5)
+                self.buttonSV.pack(side=LEFT, fill=BOTH, anchor = SW)
 
                 mainloop()
             except:
@@ -91,6 +103,10 @@ class MyFrame(Frame):
         Label(image = VFimg).pack(side=LEFT)
         mainloop()
         return VFimg
+
+    def save_img(self, name):
+        global image
+        image.save(name) # Salvando a imagem
 
     # Create a new image with the given size
     def create_image(self, i, j):
@@ -146,14 +162,25 @@ class MyFrame(Frame):
         # Show image
         GSimg = ImageTk.PhotoImage(new)
         Label(image = GSimg).pack(side=LEFT)
-        mainloop()
+
         image = new
+
+        mainloop()
+
 
         return new
 
     def QTFilter(self, num):
-        # quantization number input
-        print(num)
+        global image
+        new = image.quantize(int(num), None, 0, None)
+        QTimg = ImageTk.PhotoImage(new)
+        Label(image = QTimg).pack(side=LEFT)
+
+        image = new
+
+        mainloop()
+
+        return new
 
 if __name__=="__main__":
     MyFrame().mainloop()
