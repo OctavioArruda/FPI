@@ -3,7 +3,11 @@ from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
 from PIL import Image, ImageTk, ImageFilter, ImageOps
 
+<<<<<<< HEAD
 image = Image.new('RGB', (800,1280), (255, 255, 255)) #global image
+=======
+image = Image.new('RGB', (800,1280), (255, 255, 255)) #global image                                             
+>>>>>>> c7a1684a7a1c5955e69545b71e98a22c3f254702
 
 class MyFrame(Frame):
     def __init__(self):
