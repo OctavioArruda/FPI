@@ -3,11 +3,8 @@ from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
 from PIL import Image, ImageTk, ImageFilter, ImageOps
 
-<<<<<<< HEAD
 image = Image.new('RGB', (800,1280), (255, 255, 255)) #global image
-=======
-image = Image.new('RGB', (800,1280), (255, 255, 255)) #global image                                             
->>>>>>> c7a1684a7a1c5955e69545b71e98a22c3f254702
+backup = Image.new('RGB', (800,1280), (255, 255, 255)) #backup
 
 class MyFrame(Frame):
     def __init__(self):
@@ -24,14 +21,17 @@ class MyFrame(Frame):
 
     def load_img(self):
         global image
+        global backup
         imgname = askopenfilename(filetypes=(("JPG files", "*.jpg"),
         ("PNG files", "*.png"),
         ("BMP files", "*.bmp")))
-
         if imgname:
             try:
                 print(imgname)
                 image = Image.open(imgname)
+
+                backup = image # to have the original image button
+
                 tkimage = ImageTk.PhotoImage(image)
                 Label(image = tkimage).grid(row = 0, column = 8,padx = 10, pady= 10)
 
@@ -67,13 +67,29 @@ class MyFrame(Frame):
                 self.ESV.grid(row = 5, column = 1)
 
                 self.buttonSV = Button(self, text="Save",
-                command = lambda: self.save_img(name = self.ESV.get()),width=5)
+                command = lambda: self.save_img(name = self.ESV.get()),width=10)
                 self.buttonSV.grid(row = 5, column = 2)
+
+                self.buttonOI = Button(self, text="Original",
+                command = self.originalIMG, width = 10)
+                self.buttonOI.grid(row = 6, column = 0,  padx = 10, pady = 1)
 
                 mainloop()
             except:
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
             return
+
+    def originalIMG(self):
+        global image
+        global backup
+        image = backup
+
+        backupimg = ImageTk.PhotoImage(image)
+        Label(image = backupimg).grid(row = 0, column = 20)
+        mainloop()
+        return image
+
+        return image
 
     def H_flip(self): # horizontal flip with pixel by pixel operations
         global image
@@ -176,44 +192,44 @@ class MyFrame(Frame):
     def QTFilter(self, numqt):
         global image
         width, height = image.size
+
         newimg = self.create_image(width, height)
         newpixels = newimg.load()
 
         num = int(numqt)
 
         if num > 256:
-            num = 256;
+            num = 256
         elif num <= 0:
-            num = 1;
+            num = 1
 
-        prop = 256 / num
+        prop = 255 / num
 
-        for i in range(width):
-            for j in range(height):
+        for i in range(0, width):
+            for j in range(0, height):
                 pixel = self.get_pixel(image, i, j)
 
-                Red = pixel[0]
-                Green = pixel[1]
-                Blue = pixel[2]
+                red = pixel[0]
+                green = pixel[1]
+                blue = pixel[2]
 
-                Rchan = Red / prop
-                Gchan = Green / prop
-                Bchan = Blue / prop
+                Rchan = int(red / prop)
+                Gchan = int(green / prop)
+                Bchan = int(blue / prop)
 
-                newR = Rchan * prop + (prop / 2)
-                newG = Gchan * prop + (prop / 2)
-                newB = Bchan * prop + (prop / 2)
+                newR = int(Rchan * prop)
+                newG = int(Gchan * prop)
+                newB = int(Bchan * prop)
 
                 if newR > 255:
-                    newR = 255;
+                    newR = 255
                 if newG > 255:
-                    newG = 255;
+                    newG = 255
                 if newB > 255:
-                    newB = 255;
+                    newB = 255
 
                 newpixels[i, j] = (int(newR), int(newG), int(newB))
 
-        #new = image.quantize(int(num), None, 0, None)
         QTimg = ImageTk.PhotoImage(newimg)
         Label(image = QTimg).grid(row = 0, column = 20)
 
