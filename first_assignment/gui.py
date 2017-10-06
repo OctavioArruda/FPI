@@ -74,6 +74,10 @@ class MyFrame(Frame):
                 command = self.originalIMG, width = 10)
                 self.buttonOI.grid(row = 6, column = 0,  padx = 10, pady = 1)
 
+                self.buttonNEG = Button(self, text = "Negative",
+                command = self.negative, width = 10)
+                self.buttonNEG.grid(row = 7, column = 0, padx = 10, pady = 1)
+
                 mainloop()
             except:
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
@@ -238,6 +242,38 @@ class MyFrame(Frame):
         mainloop()
 
         return newimg
+
+    def negative(self):
+        global image
+        width, height = image.size
+
+        new = self.create_image(width, height)
+        pixels = new.load()
+
+        for i in range(width):
+            for j in range(height):
+                pixel = self.get_pixel(image, i, j)
+
+                red = pixel[0]
+                green = pixel[1]
+                blue = pixel[2]
+
+                negred = 255 - red
+                neggre = 255 - green
+                negblu = 255 - blue
+
+                pixels[i, j] = (negred, neggre, negblu)
+
+        NEGIMG = ImageTk.PhotoImage(new)
+        Label(image = NEGIMG).grid(row =0, column = 20)
+
+        image = new
+
+        mainloop()
+
+        return new
+
+
 
 if __name__=="__main__":
     MyFrame().mainloop()
