@@ -55,7 +55,7 @@ class MyFrame(Frame):
                 self.EQT.grid(row = 4, column = 1)
 
                 self.buttonQT = Button(self, text="Ok",
-                command = lambda: self.QTFilter(numqt = self.EQT.get()), width=5)
+                command = lambda: self.QTFilter(numqt = self.EQT.get()), width=10)
                 self.buttonQT.grid(row = 4, column = 2, ) # Image qt button
 
 
@@ -66,15 +66,15 @@ class MyFrame(Frame):
                 self.ESV.bind("<Return>",lambda name: self.save_img(name = self.ESV.get()))
                 self.ESV.grid(row = 5, column = 1)
 
-                self.buttonSV = Button(self, text="Save",
+                self.buttonSV = Button(self, text="Save", # Image save button
                 command = lambda: self.save_img(name = self.ESV.get()),width=10)
                 self.buttonSV.grid(row = 5, column = 2)
 
-                self.buttonOI = Button(self, text="Original",
+                self.buttonOI = Button(self, text="Original", # Retrive original image button
                 command = self.originalIMG, width = 10)
                 self.buttonOI.grid(row = 6, column = 0,  padx = 10, pady = 1)
 
-                self.buttonNEG = Button(self, text = "Negative",
+                self.buttonNEG = Button(self, text = "Negative", # Negative calc button
                 command = self.negative, width = 10)
                 self.buttonNEG.grid(row = 7, column = 0, padx = 10, pady = 1)
 
@@ -89,13 +89,12 @@ class MyFrame(Frame):
         image = backup
 
         backupimg = ImageTk.PhotoImage(image)
-        Label(image = backupimg).grid(row = 0, column = 20)
+
+        Label(image=backupimg).grid(row=0, column=20)
         mainloop()
         return image
 
-        return image
-
-    def H_flip(self): # horizontal flip with pixel by pixel operations
+    def H_flip(self):  # horizontal flip with pixel by pixel operations
         global image
         width = image.size[0]
         height = image.size[1]
@@ -107,7 +106,7 @@ class MyFrame(Frame):
                 image.putpixel((x, y), right)
 
         HFimg = ImageTk.PhotoImage(image)
-        Label(image = HFimg).grid(row = 0, column = 20)
+        Label(image=HFimg).grid(row=0, column=20)
         mainloop()
         return HFimg
 
@@ -119,18 +118,18 @@ class MyFrame(Frame):
         for y in range(height // 2):
             for x in range(width):
                 left = image.getpixel((x, y))
-                right = image.getpixel((x , height - y - 1))
-                image.putpixel((x, height - y -1), left)
+                right = image.getpixel((x, height - y - 1))
+                image.putpixel((x, height - y - 1), left)
                 image.putpixel((x, y), right)
 
         VFimg = ImageTk.PhotoImage(image)
-        Label(image = VFimg).grid(row = 0, column = 20)
+        Label(image=VFimg).grid(row=0, column=20)
         mainloop()
         return VFimg
 
     def save_img(self, name):
         global image
-        image.save(name) # Salvando a imagem
+        image.save(name)  # Salvando a imagem
 
     # Create a new image with the given size
     def create_image(self, i, j):
@@ -172,9 +171,9 @@ class MyFrame(Frame):
                 pixel = self.get_pixel(image, i, j)
 
                 # Get R, G, B values (This are int from 0 to 255)
-                red =   pixel[0]
+                red = pixel[0]
                 green = pixel[1]
-                blue =  pixel[2]
+                blue = pixel[2]
 
                 # Transform to grayscale
                 gray = (red * 0.299) + (green * 0.587) + (blue * 0.114)
@@ -182,10 +181,9 @@ class MyFrame(Frame):
                 # Set Pixel in new image
                 pixels[i, j] = (int(gray), int(gray), int(gray))
 
-
         # Show image
         GSimg = ImageTk.PhotoImage(new)
-        Label(image = GSimg).grid(row = 0, column = 20)
+        Label(image=GSimg).grid(row=0, column=20)
 
         image = new
 
@@ -235,7 +233,7 @@ class MyFrame(Frame):
                 newpixels[i, j] = (int(newR), int(newG), int(newB))
 
         QTimg = ImageTk.PhotoImage(newimg)
-        Label(image = QTimg).grid(row = 0, column = 20)
+        Label(image=QTimg).grid(row=0, column=20)
 
         image = newimg
 
@@ -265,7 +263,7 @@ class MyFrame(Frame):
                 pixels[i, j] = (negred, neggre, negblu)
 
         NEGIMG = ImageTk.PhotoImage(new)
-        Label(image = NEGIMG).grid(row =0, column = 20)
+        Label(image=NEGIMG).grid(row=0, column=20)
 
         image = new
 
@@ -273,6 +271,37 @@ class MyFrame(Frame):
 
         return new
 
+    def zoom_out(input_image, sx, sy):
+        global image
+        width, height = image.size
+
+
+        new = self.create_image(width, height)
+        newpx = new.load()
+
+
+        retanguloR = 0
+        retanguloG = 0
+        retanguloB = 0
+        for i in range(width):
+            for j in range(height):
+                retanguloR, retanguloG, retanguloB = 0, 0, 0
+                for x in range(i * sx, (i * sx) + sx):
+                    for y in range(j * sy, (j * sy) + sy):
+                        retanguloR += pixel[x, y][0]
+                        retanguloG += pixel[x, y][1]
+                        retanguloB += pixel[x, y][2]
+                retanguloR = retanguloR / (sx * sy)
+                retanguloG = retanguloG / (sx * sy)
+                retanguloB = retanguloB / (sx * sy)
+                newpx[i, j] = int(retanguloR), int(retanguloG), int(retanguloB)
+
+        zoutimg = ImageTk.PhotoImage(new)
+        Label(image = zoutimg).grid(row = 0 ,column = 20)
+
+        image = new
+
+        return (ImageTk.PhotoImage(img2), img2)
 
 
 if __name__=="__main__":
