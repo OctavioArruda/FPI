@@ -279,7 +279,6 @@ class MyFrame(Frame):
         new = self.create_image(width, height)
         newpx = new.load()
 
-
         retanguloR = 0
         retanguloG = 0
         retanguloB = 0
@@ -302,7 +301,6 @@ class MyFrame(Frame):
         image = new
 
         return (ImageTk.PhotoImage(img2), img2)
-
 
 if __name__=="__main__":
     MyFrame().mainloop()
