@@ -129,7 +129,7 @@ class MyFrame(Frame):
 
     def save_img(self, name):
         global image
-        image.save(name)  # Salvando a imagem
+        image.save(name)
 
     # Create a new image with the given size
     def create_image(self, i, j):
@@ -274,7 +274,6 @@ class MyFrame(Frame):
     def zoom_out(input_image, sx, sy):
         global image
         width, height = image.size
-
 
         new = self.create_image(width, height)
         newpx = new.load()
