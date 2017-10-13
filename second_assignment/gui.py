@@ -415,6 +415,84 @@ class MyFrame(Frame):
 
         mainloop()
 
+    def hhistogram(self):
+        global image
+        width, height = image.size
+
+        pixels = image.load()  # load original img pixels
+
+        histogram = []
+        colored = 0
+
+        for i in range(256):
+            histogram.append(0)
+
+        for x in range(width):
+            for y in range(height):
+                if (pixels[x, y][0] != pixels[x, y][1]) or (pixels[x, y][0] != pixels[x, y][2]) or (
+                    pixels[x, y][1] != pixels[x, y][2]):
+                    colored = 1
+
+        if colored == 1:
+            for x in range(width):
+                for y in range(height):
+                    Linear_T = pixels[x, y][0] * 0.299 + pixels[x, y][1] * 0.587 + pixels[x, y][2] * 0.114
+                    pixels[x, y] = int(Linear_T), int(Linear_T), int(Linear_T)
+
+        for x in range(width):
+            for y in range(height):
+                histogram[pixels[x, y][0]] = histogram[pixels[x, y][0]] + 1
+
+        return histogram
+
+
+
+    def histogram(self):
+        h = self.createHistogram
+        h = self.normalizeHistogram
+
+        img = np.zeros([256, 256, 3], dtype=np.uint8)
+        img.fill(255)
+
+        for column in range(0, 256):
+            key = (column, column, column)
+            pixelsCount = 0
+            if key in h:
+                pixelsCount = h[key]
+            for row in range(256 - pixelsCount, 256):
+                img[row, column] = [55, 55, 55]
+
+        return img
+
+    def createHistogram(self):
+        global image
+        height, width, channels = image.shape
+
+        histogram = {}
+
+        for row in range(0, height):
+            for columns in range(0, width):
+                key = tuple(image[row, column])
+                if key in histogram:
+                    histogram[key] += 1
+                else:
+                    histogram[key] = 1
+
+        return histogram
+
+    def normalizeHistogram(self):
+        sortedValues = sorted(h.values())
+        biggest = sortedValues[len(h.values()) - 1]
+        new = {}
+
+        for value in range(0, 256):
+            key = (value, value, value)
+            new[key] = 0
+            if key in h:
+                new[key] = 256 * h[key] / biggest
+
+        return new
+
 
 
 
