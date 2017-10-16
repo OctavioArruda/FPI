@@ -267,6 +267,8 @@ class MyFrame(Frame):
 
         return newimg
 
+    ## negative calc pixel by pixel operations
+
     def negative(self):
         global image
         width, height = image.size
@@ -297,6 +299,8 @@ class MyFrame(Frame):
 
         return new
 
+
+
     def histogram(self):
         global image
         width, height = image.size
@@ -325,6 +329,8 @@ class MyFrame(Frame):
                 histogram[pixels[x,y][0]] = histogram[pixels[x,y][0]] + 1
 
         return histogram
+
+
 
 
     def brightness_adjust(self, bright):
