@@ -2,9 +2,11 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
 from PIL import Image, ImageTk, ImageFilter, ImageOps
+import numpy as np
 
 image = Image.new('RGB', (800,1280), (255, 255, 255)) #global image
 backup = Image.new('RGB', (800,1280), (255, 255, 255)) #backup
+histogram = {}
 
 class MyFrame(Frame):
     def __init__(self):
@@ -425,7 +427,7 @@ class MyFrame(Frame):
         global image
         width, height = image.size
 
-        pixels = image.load()  # load original img pixels
+        pixels = image.load()
 
         histogram = []
         colored = 0
@@ -454,8 +456,11 @@ class MyFrame(Frame):
 
 
     def histogram(self):
-        h = self.createHistogram
-        h = self.normalizeHistogram
+
+        global histogram
+        histogram = self.createHistogram
+
+        histogram = self.normalizeHistogram()
 
         img = np.zeros([256, 256, 3], dtype=np.uint8)
         img.fill(255)
@@ -463,14 +468,20 @@ class MyFrame(Frame):
         for column in range(0, 256):
             key = (column, column, column)
             pixelsCount = 0
-            if key in h:
-                pixelsCount = h[key]
+            if key in histogram:
+                pixelsCount = histogram[key]
             for row in range(256 - pixelsCount, 256):
                 img[row, column] = [55, 55, 55]
+
+        newimg = ImageTk.PhotoImage(img)
+        Label(image=newimg).grid(row=0, column=20)
+
+        image = img
 
         return img
 
     def createHistogram(self):
+        global histogram
         global image
         height, width, channels = image.shape
 
@@ -487,19 +498,20 @@ class MyFrame(Frame):
         return histogram
 
     def normalizeHistogram(self):
-        sortedValues = sorted(h.values())
-        biggest = sortedValues[len(h.values()) - 1]
+
+        global histogram
+
+        sortedValues = sorted(histogram.values())
+        biggest = sortedValues[len(histogram.values()) - 1]
         new = {}
 
         for value in range(0, 256):
             key = (value, value, value)
             new[key] = 0
-            if key in h:
-                new[key] = 256 * h[key] / biggest
+            if key in histogram:
+                new[key] = 256 * histogram[key] / biggest
 
         return new
-
-
 
 
 if __name__=="__main__":
