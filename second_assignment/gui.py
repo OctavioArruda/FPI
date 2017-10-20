@@ -454,7 +454,6 @@ class MyFrame(Frame):
         return histogram
 
 
-
     def histogram(self):
 
         global histogram
