@@ -52,24 +52,24 @@ class MyFrame(Frame):
                 self.LblQT = Label(self, text = "QT number:") # label qt
                 self.LblQT.grid(row = 4, column = 0, padx = 1, pady =1)
 
-                self.EQT = Entry(self, bd =3, width = 10) # Image quantization
+                self.EQT = Entry(self, bd =3, width = 5) # Image quantization
                 self.EQT.bind("<Return>",lambda numqt: self.QTFilter(numqt = self.EQT.get()))
                 self.EQT.grid(row = 4, column = 1)
 
                 self.buttonQT = Button(self, text="Ok",
-                command = lambda: self.QTFilter(numqt = self.EQT.get()), width=10)
+                command = lambda: self.QTFilter(numqt = self.EQT.get()), width=6)
                 self.buttonQT.grid(row = 4, column = 2, ) # Image qt button
 
 
                 self.LblSV = Label(self, text = "Save as:") # label qt
                 self.LblSV.grid(row = 5, column = 0)
 
-                self.ESV = Entry(self, bd =3, width = 10) # Image quantization
+                self.ESV = Entry(self, bd =3, width = 5) # Image quantization
                 self.ESV.bind("<Return>",lambda name: self.save_img(name = self.ESV.get()))
                 self.ESV.grid(row = 5, column = 1)
 
                 self.buttonSV = Button(self, text="Save", # Image save button
-                command = lambda: self.save_img(name = self.ESV.get()),width=10)
+                command = lambda: self.save_img(name = self.ESV.get()),width=6)
                 self.buttonSV.grid(row = 5, column = 2)
 
                 self.buttonOI = Button(self, text="Original", # Retrive original image button
@@ -87,23 +87,23 @@ class MyFrame(Frame):
                 self.lblBV = Label(self, text="Bright value:")  # label brightness
                 self.lblBV.grid(row=9, column=0, padx=1, pady=1)
 
-                self.EBV = Entry(self, bd=3, width=10)
+                self.EBV = Entry(self, bd=3, width=5)
                 self.EBV.bind("<Return>", lambda: self.brightness_adjust(bright=self.EBV.get()))
                 self.EBV.grid(row=9, column=1)
 
                 self.buttonBV = Button(self, text="Ok",
-                                       command=lambda: self.brightness_adjust(bright=self.EBV.get()), width=10)
+                                       command=lambda: self.brightness_adjust(bright=self.EBV.get()), width=6)
                 self.buttonBV.grid(row=9, column=2, )  # Image brightness button
 
                 self.lblCA = Label(self, text="Contrast:")  # label contrast
                 self.lblCA.grid(row=10, column=0, padx=1, pady=1)
 
-                self.ECA = Entry(self, bd=3, width=10)
+                self.ECA = Entry(self, bd=3, width=5)
                 self.ECA.bind("<Return>", lambda: self.contrast_adjust(contrast_value=self.ECA.get()))
                 self.ECA.grid(row=10, column=1)
 
                 self.buttonCA = Button(self, text="Ok",
-                                       command=lambda: self.contrast_adjust(contrast_value=self.ECA.get()), width=10)
+                                       command=lambda: self.contrast_adjust(contrast_value=self.ECA.get()), width=6)
                 self.buttonCA.grid(row=10,  column=2, )  # contrast button
 
                 # ************************** Buttons and Labels for Zooming out **********************************
@@ -116,10 +116,10 @@ class MyFrame(Frame):
                 self.lblCA = Label(self, text="Values:")  # label zout
                 self.lblCA.grid(row=11, column=1, padx=1, pady=1)
 
-                self.EZOsx = Entry(self, bd=3, width = 3)
+                self.EZOsx = Entry(self, bd=3, width = 5)
                 self.EZOsx.grid(row = 11, column = 2)
 
-                self.EZOsy = Entry(self, bd=3, width = 3)
+                self.EZOsy = Entry(self, bd=3, width = 5)
                 self.EZOsy.grid(row=11, column = 3)
 
 
