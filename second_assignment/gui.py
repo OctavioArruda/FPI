@@ -432,16 +432,16 @@ class MyFrame(Frame):
         histogram = []
         colored = 0
 
-        for i in range(256):
+        for i in range(256):    # starting the histogram filled with zeros, 256 positions
             histogram.append(0)
 
-        for x in range(width):
+        for x in range(width):  # testing if the image is not on grayscale
             for y in range(height):
                 if (pixels[x, y][0] != pixels[x, y][1]) or (pixels[x, y][0] != pixels[x, y][2]) or (
                     pixels[x, y][1] != pixels[x, y][2]):
                     colored = 1
 
-        if colored == 1:
+        if colored == 1:    # if she's not on GS, turn into GS
             for x in range(width):
                 for y in range(height):
                     Linear_T = pixels[x, y][0] * 0.299 + pixels[x, y][1] * 0.587 + pixels[x, y][2] * 0.114
@@ -452,15 +452,46 @@ class MyFrame(Frame):
                 histogram[pixels[x, y][0]] = histogram[pixels[x, y][0]] + 1
 
 
-        w = Canvas(self , width=300, height=300, bg = "#ffffff")  # canvas to plot histogram into
-        w.grid(row=0, column = 20)
-        w.create_line(300, 250, 300, 50) # from x1, y1 to x2, y2 draw a line
+        w = Canvas(self , width=256, height=256, bg = "#ffffff")  # canvas to plot histogram into
+        w.grid(row=0, column = 60)
+
+        for shade in range(256):
+            w.create_line(shade, 256, shade, histogram[shade])
+
+        # from x1, y1 to x2, y2 draw a line
         # make the vertical line when x1 = x2 and y1 != y2
+
         mainloop()
 
-
-
         return histogram
+
+    def zoom_out(self , sx, sy):
+        global image
+        width, height = image.size
+
+        pixel = image.load()
+
+        img2 = Image.new("RGB", (int(img.size[0] / sx), int(img.size[1] / sy)))
+        pixel2 = img2.load()
+
+        retanguloR = 0
+        retanguloG = 0
+        retanguloB = 0
+        
+        for i in range(0, img2.size[0]):
+            for j in range(0, img2.size[1]):
+                retanguloR, retanguloG, retanguloB = 0, 0, 0
+                for x in range(i * sx, (i * sx) + sx):
+                    for y in range(j * sy, (j * sy) + sy):
+                        retanguloR += pixel[x, y][0]
+                        retanguloG += pixel[x, y][1]
+                        retanguloB += pixel[x, y][2]
+                retanguloR = retanguloR / (sx * sy)
+                retanguloG = retanguloG / (sx * sy)
+                retanguloB = retanguloB / (sx * sy)
+                pixel2[i, j] = int(retanguloR), int(retanguloG), int(retanguloB)
+
+        return (ImageTk.PhotoImage(img2), img2)
 
 
 
