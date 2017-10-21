@@ -106,6 +106,23 @@ class MyFrame(Frame):
                                        command=lambda: self.contrast_adjust(contrast_value=self.ECA.get()), width=10)
                 self.buttonCA.grid(row=10,  column=2, )  # contrast button
 
+                # ************************** Buttons and Labels for Zooming out **********************************
+
+                self.buttonZO = Button(self, text="Z_out",
+                                       command=lambda: self.zoom_out(sx=self.EZOsx.get(), sy=self.EZOsy.get()),
+                                       width=10)
+                self.buttonZO.grid(row=11, column=0)
+
+                self.lblCA = Label(self, text="Values:")  # label zout
+                self.lblCA.grid(row=11, column=1, padx=1, pady=1)
+
+                self.EZOsx = Entry(self, bd=3, width = 3)
+                self.EZOsx.grid(row = 11, column = 2)
+
+                self.EZOsy = Entry(self, bd=3, width = 3)
+                self.EZOsy.grid(row=11, column = 3)
+
+
                 mainloop()
             except:
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
@@ -465,22 +482,20 @@ class MyFrame(Frame):
 
         return histogram
 
-    def zoom_out(self , sx, sy):
+    def zoom_out(self, sx, sy):
         global image
         width, height = image.size
 
         pixel = image.load()
 
-        img2 = Image.new("RGB", (int(img.size[0] / sx), int(img.size[1] / sy)))
+        img2 = Image.new("RGB", (int(image.size[0] / sx), int(image.size[1] / sy)))
         pixel2 = img2.load()
 
-        retanguloR = 0
-        retanguloG = 0
-        retanguloB = 0
-        
-        for i in range(0, img2.size[0]):
-            for j in range(0, img2.size[1]):
+        for i in range(width):
+            for j in range(height):
+
                 retanguloR, retanguloG, retanguloB = 0, 0, 0
+
                 for x in range(i * sx, (i * sx) + sx):
                     for y in range(j * sy, (j * sy) + sy):
                         retanguloR += pixel[x, y][0]
@@ -491,9 +506,14 @@ class MyFrame(Frame):
                 retanguloB = retanguloB / (sx * sy)
                 pixel2[i, j] = int(retanguloR), int(retanguloG), int(retanguloB)
 
-        return (ImageTk.PhotoImage(img2), img2)
+        newimg = ImageTk.PhotoImage(img2)
+        Label(image=newimg).grid(row=0, column=20)
 
+        image = img2
 
+        mainloop()
+
+        return img2
 
 
 if __name__=="__main__":
