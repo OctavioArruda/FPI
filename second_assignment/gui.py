@@ -423,7 +423,7 @@ class MyFrame(Frame):
 
         mainloop()
 
-    def hhistogram(self):
+    def histogram(self):
         global image
         width, height = image.size
 
@@ -451,66 +451,18 @@ class MyFrame(Frame):
             for y in range(height):
                 histogram[pixels[x, y][0]] = histogram[pixels[x, y][0]] + 1
 
-        return histogram
+
+        w = Canvas(self , width=300, height=300, bg = "#ffffff")  # canvas to plot histogram into
+        w.grid(row=0, column = 20)
+        w.create_line(300, 250, 300, 50) # from x1, y1 to x2, y2 draw a line
+        # make the vertical line when x1 = x2 and y1 != y2
+        mainloop()
 
 
-    def histogram(self):
-
-        global histogram
-        histogram = self.createHistogram
-
-        histogram = self.normalizeHistogram()
-
-        img = np.zeros([256, 256, 3], dtype=np.uint8)
-        img.fill(255)
-
-        for column in range(0, 256):
-            key = (column, column, column)
-            pixelsCount = 0
-            if key in histogram:
-                pixelsCount = histogram[key]
-            for row in range(256 - pixelsCount, 256):
-                img[row, column] = [55, 55, 55]
-
-        newimg = ImageTk.PhotoImage(img)
-        Label(image=newimg).grid(row=0, column=20)
-
-        image = img
-
-        return img
-
-    def createHistogram(self):
-        global histogram
-        global image
-        height, width, channels = image.shape
-
-        histogram = {}
-
-        for row in range(0, height):
-            for columns in range(0, width):
-                key = tuple(image[row, column])
-                if key in histogram:
-                    histogram[key] += 1
-                else:
-                    histogram[key] = 1
 
         return histogram
 
-    def normalizeHistogram(self):
 
-        global histogram
-
-        sortedValues = sorted(histogram.values())
-        biggest = sortedValues[len(histogram.values()) - 1]
-        new = {}
-
-        for value in range(0, 256):
-            key = (value, value, value)
-            new[key] = 0
-            if key in histogram:
-                new[key] = 256 * histogram[key] / biggest
-
-        return new
 
 
 if __name__=="__main__":
