@@ -84,6 +84,8 @@ class MyFrame(Frame):
                 command = self.histogram, width =10)
                 self.buttonHIST.grid(row = 8, column =0, padx = 10, pady =1)
 
+                # ************************* Buttons and Labels for Brightness Adjust ********************************
+
                 self.lblBV = Label(self, text="Bright value:")  # label brightness
                 self.lblBV.grid(row=9, column=0, padx=1, pady=1)
 
@@ -94,6 +96,9 @@ class MyFrame(Frame):
                 self.buttonBV = Button(self, text="Ok",
                                        command=lambda: self.brightness_adjust(bright=self.EBV.get()), width=6)
                 self.buttonBV.grid(row=9, column=2, )  # Image brightness button
+
+
+                # ************************* Buttons and Labels for Contrast Adjust ********************************
 
                 self.lblCA = Label(self, text="Contrast:")  # label contrast
                 self.lblCA.grid(row=10, column=0, padx=1, pady=1)
@@ -106,15 +111,16 @@ class MyFrame(Frame):
                                        command=lambda: self.contrast_adjust(contrast_value=self.ECA.get()), width=6)
                 self.buttonCA.grid(row=10,  column=2, )  # contrast button
 
+
                 # ************************** Buttons and Labels for Zooming out **********************************
 
                 self.buttonZO = Button(self, text="Z_out",
-                                       command=lambda: self.zoom_out(sx=self.EZOsx.get(), sy=self.EZOsy.get()),
+                                       command=lambda: self.zoom_out(valsx=self.EZOsx.get(), valsy=self.EZOsy.get()),
                                        width=10)
                 self.buttonZO.grid(row=11, column=0)
 
-                self.lblCA = Label(self, text="Values:")  # label zout
-                self.lblCA.grid(row=11, column=1, padx=1, pady=1)
+                self.lblZO = Label(self, text="Values:")  # label zout
+                self.lblZO.grid(row=11, column=1, padx=1, pady=1)
 
                 self.EZOsx = Entry(self, bd=3, width = 5)
                 self.EZOsx.grid(row = 11, column = 2)
@@ -122,6 +128,7 @@ class MyFrame(Frame):
                 self.EZOsy = Entry(self, bd=3, width = 5)
                 self.EZOsy.grid(row=11, column = 3)
 
+                # **************************************************************************************************
 
                 mainloop()
             except:
@@ -482,13 +489,16 @@ class MyFrame(Frame):
 
         return histogram
 
-    def zoom_out(self, sx, sy):
+    def zoom_out(self, valsx, valsy):
         global image
         width, height = image.size
 
+        sx = int(valsx)
+        sy = int(valsy)
+
         pixel = image.load()
 
-        img2 = Image.new("RGB", (int(image.size[0] / sx), int(image.size[1] / sy)))
+        img2 = Image.new("RGB", ( int(width/sx), int(height/sy) ))
         pixel2 = img2.load()
 
         for i in range(width):
@@ -501,6 +511,7 @@ class MyFrame(Frame):
                         retanguloR += pixel[x, y][0]
                         retanguloG += pixel[x, y][1]
                         retanguloB += pixel[x, y][2]
+
                 retanguloR = retanguloR / (sx * sy)
                 retanguloG = retanguloG / (sx * sy)
                 retanguloB = retanguloB / (sx * sy)
