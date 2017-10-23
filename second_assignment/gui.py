@@ -114,7 +114,7 @@ class MyFrame(Frame):
 
                 # ************************** Buttons and Labels for Zooming out **********************************
 
-                self.buttonZO = Button(self, text="Z_out",
+                self.buttonZO = Button(self, text="Zoom out",
                                        command=lambda: self.zoom_out(valsx=self.EZOsx.get(), valsy=self.EZOsy.get()),
                                        width=10)
                 self.buttonZO.grid(row=11, column=0)
@@ -128,7 +128,13 @@ class MyFrame(Frame):
                 self.EZOsy = Entry(self, bd=3, width = 5)
                 self.EZOsy.grid(row=11, column = 3)
 
-                # **************************************************************************************************
+                # ************************* Buttons and Labels for Zooming in *************************************
+
+                self.buttonZI = Button(self, text="Zoom in",
+                                       command = self.zoom_in,
+                                       width=10)
+                self.buttonZI.grid(row=12, column=0)
+
 
                 mainloop()
             except:
@@ -496,13 +502,17 @@ class MyFrame(Frame):
         sx = int(valsx)
         sy = int(valsy)
 
+        if 1 > sx or 1 > sy:
+            sx = 1
+            sy = 1
+
         pixel = image.load()
 
         img2 = Image.new("RGB", ( int(width/sx), int(height/sy) ))
         pixel2 = img2.load()
 
-        for i in range(width):
-            for j in range(height):
+        for i in range(0 ,img2.size[0]):
+            for j in range(0 ,img2.size[1]):
 
                 retanguloR, retanguloG, retanguloB = 0, 0, 0
 
@@ -512,9 +522,10 @@ class MyFrame(Frame):
                         retanguloG += pixel[x, y][1]
                         retanguloB += pixel[x, y][2]
 
-                retanguloR = retanguloR / (sx * sy)
-                retanguloG = retanguloG / (sx * sy)
-                retanguloB = retanguloB / (sx * sy)
+                retanguloR = retanguloR/(sx * sy)
+                retanguloG = retanguloG/(sx * sy)
+                retanguloB = retanguloB/(sx * sy)
+
                 pixel2[i, j] = int(retanguloR), int(retanguloG), int(retanguloB)
 
         newimg = ImageTk.PhotoImage(img2)
@@ -525,6 +536,99 @@ class MyFrame(Frame):
         mainloop()
 
         return img2
+
+
+    def zoom_in(input_image):
+        global image
+        width, height = image.size
+        pixel = image.load()
+
+
+        img2 = Image.new("RGB", (2 * (int(width)), (2 * (int(height)))))
+        pixel2 = img2.load()
+
+        for x in range(0, width):
+            for y in range(0, height):
+                pixel2[2 * x, 2 * y] = pixel[x, y]
+
+        for x in range(0, img2.size[0]):
+            for y in range(0, img2.size[1]):
+                if (x % 2 != 0) and (y % 2 == 0):
+
+                    if (x != img2.size[0] - 1):
+                        L1 = pixel2[x - 1, y][0] + pixel2[x + 1, y][0]
+                        L2 = pixel2[x - 1, y][1] + pixel2[x + 1, y][1]
+                        L3 = pixel2[x - 1, y][2] + pixel2[x + 1, y][2]
+                    else:
+                        L1 = pixel2[x - 1, y][0]
+                        L2 = pixel2[x - 1, y][1]
+                        L3 = pixel2[x - 1, y][2]
+
+                    pixel2[x, y] = int(L1 / 2), int(L2 / 2), int(L3 / 2)
+
+        for x in range(0, img2.size[0]):
+            for y in range(0, img2.size[1]):
+                if (y % 2 != 0):
+                    if (y != img2.size[1] - 1):
+                        L1 = pixel2[x, y + 1][0] + pixel2[x, y - 1][0]
+                        L2 = pixel2[x, y + 1][1] + pixel2[x, y - 1][1]
+                        L3 = pixel2[x, y + 1][2] + pixel2[x, y - 1][2]
+                    else:
+                        L1 = pixel2[x, y - 1][0]
+                        L2 = pixel2[x, y - 1][1]
+                        L3 = pixel2[x, y - 1][2]
+
+                    pixel2[x, y] = int(L1 / 2), int(L2 / 2), int(L3 / 2)
+
+        newimg = ImageTk.PhotoImage(img2)
+        Label(image=newimg).grid(row=0, column=20)
+
+        image = img2
+
+        mainloop()
+
+
+
+    def vert_mirroring(input_image):
+
+        if (isinstance(input_image, str)):
+            img = Image.open(input_image)
+        else:
+            img = input_image
+
+        pixel = img.load()
+        horizontal_center = int(img.size[1] / 2)
+        height = int(img.size[1])
+
+        for x in range(0, img.size[0]):
+            for y in range(0, horizontal_center):
+                up_pixel = pixel[x, y]
+                bottom_pixel = pixel[x, height - y - 1]
+                pixel[x, y] = bottom_pixel
+                pixel[x, height - y - 1] = up_pixel
+
+        return (ImageTk.PhotoImage(img), img)
+
+
+    def horiz_mirroring(input_image):
+
+        if (isinstance(input_image, str)):
+            img = Image.open(input_image)
+        else:
+            img = input_image
+
+        pixel = img.load()
+        vertical_center = int(img.size[0] / 2)
+        width = int(img.size[0])
+
+        for y in range(0, img.size[1]):
+            for x in range(0, vertical_center):
+                left_pixel = pixel[x, y]
+                right_pixel = pixel[width - x - 1, y]
+                pixel[x, y] = right_pixel
+                pixel[width - x - 1, y] = left_pixel
+
+        return (ImageTk.PhotoImage(img), img)
 
 
 if __name__=="__main__":
