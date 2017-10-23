@@ -135,6 +135,19 @@ class MyFrame(Frame):
                                        width=10)
                 self.buttonZI.grid(row=12, column=0)
 
+                # ************************* Buttons and Labels for rotation right ***********************************
+
+                self.buttonRR = Button(self, text = "Rotation Right",
+                                       command = self.rotation_right,
+                                       width = 10)
+                self.buttonRR.grid(row=13, column = 0)
+
+                # ************************* Buttons and Labels for rotation left  ***********************************
+
+                self.buttonRL = Button(self, text="Rotation Left",
+                                       command=self.rotation_left,
+                                       width=10)
+                self.buttonRL.grid(row=14, column=0)
 
                 mainloop()
             except:
@@ -587,6 +600,41 @@ class MyFrame(Frame):
 
         mainloop()
 
+    def rotation_right(self):
+        global image
+
+        pixel = image.load()
+        img2 = Image.new("RGB", (int(image.size[1]), int(image.size[0])))
+        pixel2 = img2.load()
+
+        for x in range(0, image.size[0]):
+            for y in range(0, image.size[1]):
+                pixel2[(image.size[1] - y) - 1, x] = pixel[x, y]
+
+        newimg = ImageTk.PhotoImage(img2)
+        Label(image=newimg).grid(row=0, column=20)
+
+        image = img2
+
+        mainloop()
+
+    def rotation_left(self):
+        global image
+
+        pixel = image.load()
+        img2 = Image.new("RGB", (int(image.size[1]), int(image.size[0])))
+        pixel2 = img2.load()
+
+        for x in range(0, image.size[0]):
+            for y in range(0, image.size[1]):
+                pixel2[y, (image.size[0] - x) - 1] = pixel[x, y]
+
+        newimg = ImageTk.PhotoImage(img2)
+        Label(image=newimg).grid(row=0, column=20)
+
+        image = img2
+
+        mainloop()
 
 
 if __name__=="__main__":
