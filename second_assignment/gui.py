@@ -589,47 +589,5 @@ class MyFrame(Frame):
 
 
 
-    def vert_mirroring(input_image):
-
-        if (isinstance(input_image, str)):
-            img = Image.open(input_image)
-        else:
-            img = input_image
-
-        pixel = img.load()
-        horizontal_center = int(img.size[1] / 2)
-        height = int(img.size[1])
-
-        for x in range(0, img.size[0]):
-            for y in range(0, horizontal_center):
-                up_pixel = pixel[x, y]
-                bottom_pixel = pixel[x, height - y - 1]
-                pixel[x, y] = bottom_pixel
-                pixel[x, height - y - 1] = up_pixel
-
-        return (ImageTk.PhotoImage(img), img)
-
-
-    def horiz_mirroring(input_image):
-
-        if (isinstance(input_image, str)):
-            img = Image.open(input_image)
-        else:
-            img = input_image
-
-        pixel = img.load()
-        vertical_center = int(img.size[0] / 2)
-        width = int(img.size[0])
-
-        for y in range(0, img.size[1]):
-            for x in range(0, vertical_center):
-                left_pixel = pixel[x, y]
-                right_pixel = pixel[width - x - 1, y]
-                pixel[x, y] = right_pixel
-                pixel[width - x - 1, y] = left_pixel
-
-        return (ImageTk.PhotoImage(img), img)
-
-
 if __name__=="__main__":
     MyFrame().mainloop()
