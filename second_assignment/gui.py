@@ -636,6 +636,70 @@ class MyFrame(Frame):
 
         mainloop()
 
+    def convolution(self , kernel):
+        global image
+
+        caso = ""
+
+        if ((kernel[0][0] == 0.0625) and (kernel[1][0] == 0.125) and (kernel[2][0] == 0.0625) and (
+            kernel[1][0] == 0.125) and (kernel[1][1] == 0.25) and (kernel[1][2] == 0.125)
+            and (kernel[2][0] == 0.0625) and (kernel[2][1] == 0.125) and (kernel[2][2] == 0.0625)):
+            caso = "gaussiano"
+        if ((kernel[0][0] == 0) and (kernel[1][0] == -1) and (kernel[2][0] == 0) and (kernel[1][0] == -1) and (
+            kernel[1][1] == 4) and (kernel[1][2] == -1)
+            and (kernel[2][0] == 0) and (kernel[2][1] == -1) and (kernel[2][2] == 0)):
+            caso = "laplaciano"
+
+        if ((kernel[0][0] == -1) and (kernel[1][0] == -1) and (kernel[2][0] == -1) and (kernel[1][0] == -1) and (
+            kernel[1][1] == 8) and (kernel[1][2] == -1)
+            and (kernel[2][0] == -1) and (kernel[2][1] == -1) and (kernel[2][2] == -1)):
+            caso = "h_pass"
+
+        pixel = image.load()
+        img2 = Image.new("RGB", (image.size[0], image.size[1]))
+        pixel2 = img2.load()
+
+        colored = 0
+        for x in range(0, image.size[0]):
+            for y in range(0, image.size[1]):
+                if (pixel[x, y][0] != pixel[x, y][1]) or (pixel[x, y][0] != pixel[x, y][2]) or (
+                    pixel[x, y][1] != pixel[x, y][2]):
+                    colored = 1
+
+        if colored == 1:
+            for x in range(0, image.size[0]):
+                for y in range(0, image.size[1]):
+                    Linear_T = pixel[x, y][0] * 0.299 + pixel[x, y][1] * 0.587 + pixel[x, y][2] * 0.114
+                    pixel[x, y] = int(Linear_T), int(Linear_T), int(Linear_T)
+
+        for x in range(1, image.size[0] - 1):
+            for y in range(1, image.size[1] - 1):
+                conv = (kernel[2][2] * pixel[x - 1, y - 1][0]) + (kernel[1][2] * pixel[x, y - 1][0]) + (
+                kernel[0][2] * pixel[x + 1, y - 1][0]) + (kernel[2][1] * pixel[x - 1, y][0]) + (
+                       kernel[1][1] * pixel[x, y][0]) + (kernel[0][1] * pixel[x + 1, y][0]) + (
+                       kernel[2][0] * pixel[x - 1, y + 1][0]) + (kernel[1][0] * pixel[x, y + 1][0]) + (
+                       kernel[0][0] * pixel[x + 1, y + 1][0])
+                if caso == "gaussiano" or caso == "h_pass" or caso == "laplaciano":
+                    if conv < 0:
+                        conv = 0
+                    if conv > 255:
+                        conv = 255
+                else:
+                    conv += 127
+                    if conv < 0:
+                        conv = 0
+                    if conv > 255:
+                        conv = 255
+
+                pixel2[x, y] = int(conv), int(conv), int(conv)
+
+        newimg = ImageTk.PhotoImage(img2)
+        Label(image=newimg).grid(row=0, column=20)
+
+        image = img2
+
+        mainloop()
+
 
 if __name__=="__main__":
     MyFrame().mainloop()
