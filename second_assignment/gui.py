@@ -149,6 +149,12 @@ class MyFrame(Frame):
                                        width=10)
                 self.buttonRL.grid(row=14, column=0)
 
+                # ************************* Buttons and Labels for hist matching  *************************************
+
+                self.buttonHM = Button(self, text="Hist Matching",
+                                       command=self.hist_matching,
+                                       width=10)
+                self.buttonHM.grid(row=15, column=0)
 
                 mainloop()
             except:
@@ -571,6 +577,28 @@ class MyFrame(Frame):
 
         mainloop()
 
+    def hist_matching(self):
+        global image
+
+        imgname = askopenfilename(filetypes=(("JPG files", "*.jpg"),
+                                             ("PNG files", "*.png"),
+                                             ("BMP files", "*.bmp")))
+        if imgname:
+            try:
+                print(imgname)
+                imageHM = Image.open(imgname)
+
+                imgHMSHOW = ImageTk.PhotoImage(imageHM)
+                Label(image=imgHMSHOW).grid(row=0, column=30)
+
+                mainloop()
+
+            except:
+                showerror("Open Source File", "Failed to read image\n '%s'" % imgname)
+            return
+
+
+
 
     def zoom_out(self, valsx, valsy):
         global image
@@ -720,6 +748,27 @@ class MyFrame(Frame):
             and (kernel[2][0] == -1) and (kernel[2][1] == -1) and (kernel[2][2] == -1)):
             caso = "h_pass"
 
+        if ((kernel[0][0] == -1) and (kernel[1][0] == 0) and (kernel[2][0] == 1) and (kernel[1][0] == -1) and (
+            kernel[1][1] == 0) and (kernel[1][2] == 1)
+            and (kernel[2][0] == -1) and (kernel[2][1] == 0) and (kernel[2][2] == 1)):
+            caso = "Prewitt Hx"
+
+        if ((kernel[0][0] == -1) and (kernel[1][0] == -1) and (kernel[2][0] == -1) and (kernel[1][0] == 0) and (
+                    kernel[1][1] == 0) and (kernel[1][2] == 0)
+            and (kernel[2][0] == 1) and (kernel[2][1] == 1) and (kernel[2][2] == 1)):
+            caso = "Prewitt Hy Hx"
+
+
+        if ((kernel[0][0] == -1) and (kernel[1][0] == 0) and (kernel[2][0] == 1) and (kernel[1][0] == -2) and (
+                    kernel[1][1] == 0) and (kernel[1][2] == 2)
+            and (kernel[2][0] == -1) and (kernel[2][1] == 0) and (kernel[2][2] == 1)):
+            caso = "Sobel Hx"
+
+        if ((kernel[0][0] == -1) and (kernel[1][0] == -2) and (kernel[2][0] == -1) and (kernel[1][0] == 0) and (
+                    kernel[1][1] == 0) and (kernel[1][2] == 0)
+            and (kernel[2][0] == 1) and (kernel[2][1] == 2) and (kernel[2][2] == 1)):
+            caso = "Sobel Hy"
+
         pixel = image.load()
         img2 = Image.new("RGB", (image.size[0], image.size[1]))
         pixel2 = img2.load()
@@ -744,7 +793,7 @@ class MyFrame(Frame):
                        kernel[1][1] * pixel[x, y][0]) + (kernel[0][1] * pixel[x + 1, y][0]) + (
                        kernel[2][0] * pixel[x - 1, y + 1][0]) + (kernel[1][0] * pixel[x, y + 1][0]) + (
                        kernel[0][0] * pixel[x + 1, y + 1][0])
-                if caso == "gaussiano" or caso == "h_pass" or caso == "laplaciano":
+                if caso == "gaussiano" or caso == "h_pass" or caso == "laplaciano" or caso == "Prewitt Hx" or caso == "Prewitt Hy Hx" or caso == "Sobel Hx" or caso == "Sobel Hy":
                     if conv < 0:
                         conv = 0
                     if conv > 255:
