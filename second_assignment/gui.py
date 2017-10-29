@@ -149,6 +149,7 @@ class MyFrame(Frame):
                                        width=10)
                 self.buttonRL.grid(row=14, column=0)
 
+
                 mainloop()
             except:
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
@@ -433,8 +434,13 @@ class MyFrame(Frame):
 
         contrast = float(contrast_value)
 
+
+        # contrast fator
+        fator = (259 * (contrast + 255))/(255 * (259 - contrast))
+
         new = self.create_image(width, height)
         pixels = new.load()
+
 
         for x in range(width):
             for y in range(height):
@@ -444,9 +450,9 @@ class MyFrame(Frame):
                 green = pixel[1]
                 blue = pixel[2]
 
-                Linear_TR = red * contrast
-                Linear_TG = green * contrast
-                Linear_TB = blue * contrast
+                Linear_TR = int(fator * (red - 128) + 128)
+                Linear_TG = int(fator * (green - 128) + 128)
+                Linear_TB = int(fator * (blue - 128) + 128)
 
                 if Linear_TR > 255:
                     Linear_TR = 255
@@ -494,19 +500,74 @@ class MyFrame(Frame):
             for y in range(height):
                 histogram[pixels[x, y][0]] = histogram[pixels[x, y][0]] + 1
 
+        cum_hist = []
+        cum_hist = self.cumulative_hist(histogram)
 
         w = Canvas(self , width=256, height=256, bg = "#ffffff")  # canvas to plot histogram into
         w.grid(row=0, column = 60)
 
-        for shade in range(256):
+        for shade in range(255):
             w.create_line(shade, 256, shade, histogram[shade])
+
+        w = Canvas(self, width=256, height=256, bg="#ffffff")  # canvas to plot histogram into
+        w.grid(row=0, column=62)
+
+        for shade in range(255):
+            w.create_line(shade, 256, shade, cum_hist[shade])
 
         # from x1, y1 to x2, y2 draw a line
         # make the vertical line when x1 = x2 and y1 != y2
 
+        self.hist_equalization(cum_hist)
+
+
         mainloop()
 
         return histogram
+
+    def cumulative_hist(self, histogram):
+
+        cumulative = []
+
+        npixels = 0
+
+        for shade in range(255):
+            npixels += histogram[shade]
+
+        scaling = 255.0/npixels
+
+        for i in range(256):    # starting the cumulative hist filled with zeros, 256 positions
+            cumulative.append(0)
+
+        cumulative[0] = scaling * histogram[0]
+
+        # computes the renormalized cumulative histogram
+        for shade in range(1, 255):
+            cumulative[shade] = cumulative[shade - 1] + scaling * histogram[shade]
+
+        return cumulative
+
+    def hist_equalization(self, cum_hist):  # process to make a equalization of histogram
+        # and gets the new shades of gray
+        global image
+        width, height = image.size
+
+        new = self.create_image(width, height)
+        newpix = new.load()
+
+        pixels = image.load()
+
+        for i in range(width):
+            for j in range(height):
+
+                newpix[i, j][0] = cum_hist[red]
+
+        newimg = ImageTk.PhotoImage(new)
+        Label(image=newimg).grid(row=0, column=20)
+
+        image = new
+
+        mainloop()
 
     def zoom_out(self, valsx, valsy):
         global image
