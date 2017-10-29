@@ -35,7 +35,7 @@ class MyFrame(Frame):
                 backup = image # to have the original image button
 
                 tkimage = ImageTk.PhotoImage(image)
-                Label(image = tkimage).grid(row = 0, column = 8,padx = 10, pady= 10)
+                Label(image = tkimage).grid(row = 0, column = 8, padx = 10, pady= 10)
 
                 self.buttonHF = Button(self,text="flipH",
                 command = self.H_flip,width=10)
@@ -520,9 +520,6 @@ class MyFrame(Frame):
 
         self.hist_equalization(cum_hist)
 
-
-        mainloop()
-
         return histogram
 
     def cumulative_hist(self, histogram):
@@ -555,19 +552,25 @@ class MyFrame(Frame):
         new = self.create_image(width, height)
         newpix = new.load()
 
-        pixels = image.load()
-
         for i in range(width):
             for j in range(height):
+                pixel = self.get_pixel(image, i, j)
 
-                newpix[i, j][0] = cum_hist[red]
+                # Get R, G, B values (This are int from 0 to 255)
+                red = pixel[0]
+
+                newR = cum_hist[int(red)]
+
+                newpix[i, j] = int(newR), int(newR), int(newR)
+
 
         newimg = ImageTk.PhotoImage(new)
-        Label(image=newimg).grid(row=0, column=20)
+        Label(image=newimg).grid(row=0, column=21)
 
         image = new
 
         mainloop()
+
 
     def zoom_out(self, valsx, valsy):
         global image
@@ -601,6 +604,7 @@ class MyFrame(Frame):
                 retanguloB = retanguloB/(sx * sy)
 
                 pixel2[i, j] = int(retanguloR), int(retanguloG), int(retanguloB)
+
 
         newimg = ImageTk.PhotoImage(img2)
         Label(image=newimg).grid(row=0, column=20)
