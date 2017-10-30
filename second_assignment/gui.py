@@ -156,6 +156,20 @@ class MyFrame(Frame):
                                        width=10)
                 self.buttonHM.grid(row=15, column=0)
 
+                # ************************* Buttons and Labels for convolution *****************************************
+
+                self.lblC = Label(self, text="Convolution:")  # label conv
+                self.lblC.grid(row=16, column=0, padx=1, pady=1)
+
+                self.EC = Entry(self, bd=3, width=10)
+                self.EC.bind("<Return>", lambda: self.convolution(vet_kernel=self.EC.get()))
+                self.EC.grid(row=16, column=2)
+
+                self.buttonC = Button(self, text="Ok",
+                                       command=lambda: self.convolution(vet_kernel=self.EC.get()), width=6)
+                self.buttonC.grid(row=16, column=1, )  # conv button
+
+
                 mainloop()
             except:
                 showerror("Open Source File", "Failed to read image\n '%s'" %imgname)
@@ -729,45 +743,96 @@ class MyFrame(Frame):
 
         mainloop()
 
-    def convolution(self , kernel):
+    def convolution(self , vet_kernel):
         global image
 
-        caso = ""
+        w, h = 3, 3
+        kernel = [[0 for x in range(w)] for y in range(h)]
 
-        if ((kernel[0][0] == 0.0625) and (kernel[1][0] == 0.125) and (kernel[2][0] == 0.0625) and (
-            kernel[1][0] == 0.125) and (kernel[1][1] == 0.25) and (kernel[1][2] == 0.125)
-            and (kernel[2][0] == 0.0625) and (kernel[2][1] == 0.125) and (kernel[2][2] == 0.0625)):
-            caso = "gaussiano"
-        if ((kernel[0][0] == 0) and (kernel[1][0] == -1) and (kernel[2][0] == 0) and (kernel[1][0] == -1) and (
-            kernel[1][1] == 4) and (kernel[1][2] == -1)
-            and (kernel[2][0] == 0) and (kernel[2][1] == -1) and (kernel[2][2] == 0)):
-            caso = "laplaciano"
+        if vet_kernel.lower() == "gaussiano":
 
-        if ((kernel[0][0] == -1) and (kernel[1][0] == -1) and (kernel[2][0] == -1) and (kernel[1][0] == -1) and (
-            kernel[1][1] == 8) and (kernel[1][2] == -1)
-            and (kernel[2][0] == -1) and (kernel[2][1] == -1) and (kernel[2][2] == -1)):
-            caso = "h_pass"
+            kernel[0][0] = 0.0625
+            kernel[1][0] = 0.125
+            kernel[2][0] = 0.0625
+            kernel[1][0] = 0.125
+            kernel[1][1] = 0.25
+            kernel[1][2] = 0.125
+            kernel[2][0] = 0.0625
+            kernel[2][1] = 0.125
+            kernel[2][2] = 0.0625
 
-        if ((kernel[0][0] == -1) and (kernel[1][0] == 0) and (kernel[2][0] == 1) and (kernel[1][0] == -1) and (
-            kernel[1][1] == 0) and (kernel[1][2] == 1)
-            and (kernel[2][0] == -1) and (kernel[2][1] == 0) and (kernel[2][2] == 1)):
-            caso = "Prewitt Hx"
+        elif vet_kernel.lower() == "laplaciano":
 
-        if ((kernel[0][0] == -1) and (kernel[1][0] == -1) and (kernel[2][0] == -1) and (kernel[1][0] == 0) and (
-                    kernel[1][1] == 0) and (kernel[1][2] == 0)
-            and (kernel[2][0] == 1) and (kernel[2][1] == 1) and (kernel[2][2] == 1)):
-            caso = "Prewitt Hy Hx"
+            kernel[0][0] = 0
+            kernel[1][0] = -1
+            kernel[2][0] = 0
+            kernel[1][0] = -1
+            kernel[1][1] = 4
+            kernel[1][2] = -1
+            kernel[2][0] = 0
+            kernel[2][1] = -1
+            kernel[2][2] = 0
+
+        elif vet_kernel.lower() == "h_pass":
+
+            kernel[0][0] = -1
+            kernel[1][0] = -1
+            kernel[2][0] = -1
+            kernel[1][0] = -1
+            kernel[1][1] = 8
+            kernel[1][2] = -1
+            kernel[2][0] = -1
+            kernel[2][1] = -1
+            kernel[2][2] = -1
 
 
-        if ((kernel[0][0] == -1) and (kernel[1][0] == 0) and (kernel[2][0] == 1) and (kernel[1][0] == -2) and (
-                    kernel[1][1] == 0) and (kernel[1][2] == 2)
-            and (kernel[2][0] == -1) and (kernel[2][1] == 0) and (kernel[2][2] == 1)):
-            caso = "Sobel Hx"
+        elif vet_kernel.lower() == "prewitthx":
 
-        if ((kernel[0][0] == -1) and (kernel[1][0] == -2) and (kernel[2][0] == -1) and (kernel[1][0] == 0) and (
-                    kernel[1][1] == 0) and (kernel[1][2] == 0)
-            and (kernel[2][0] == 1) and (kernel[2][1] == 2) and (kernel[2][2] == 1)):
-            caso = "Sobel Hy"
+            kernel[0][0] = -1
+            kernel[1][0] = -1
+            kernel[2][0] = -1
+            kernel[1][0] = -1
+            kernel[1][1] = 8
+            kernel[1][2] = -1
+            kernel[2][0] = -1
+            kernel[2][1] = -1
+            kernel[2][2] = -1
+
+        elif vet_kernel.lower() == "prewitthyhx":
+
+            kernel[0][0] = -1
+            kernel[1][0] = -1
+            kernel[2][0] = -1
+            kernel[1][0] = 0
+            kernel[1][1] = 0
+            kernel[1][2] = 0
+            kernel[2][0] = 1
+            kernel[2][1] = 1
+            kernel[2][2] = 1
+
+        elif vet_kernel.lower() == "sobelhx":
+
+            kernel[0][0] = -1
+            kernel[1][0] = 0
+            kernel[2][0] = 1
+            kernel[1][0] = -2
+            kernel[1][1] = 0
+            kernel[1][2] = 2
+            kernel[2][0] = -1
+            kernel[2][1] = 0
+            kernel[2][2] = 1
+
+        elif vet_kernel.lower() == "sobelhy":
+
+            kernel[0][0] = -1
+            kernel[1][0] = -2
+            kernel[2][0] = -1
+            kernel[1][0] = 0
+            kernel[1][1] = 0
+            kernel[1][2] = 0
+            kernel[2][0] = 1
+            kernel[2][1] = 2
+            kernel[2][2] = 1
 
         pixel = image.load()
         img2 = Image.new("RGB", (image.size[0], image.size[1]))
@@ -793,7 +858,7 @@ class MyFrame(Frame):
                        kernel[1][1] * pixel[x, y][0]) + (kernel[0][1] * pixel[x + 1, y][0]) + (
                        kernel[2][0] * pixel[x - 1, y + 1][0]) + (kernel[1][0] * pixel[x, y + 1][0]) + (
                        kernel[0][0] * pixel[x + 1, y + 1][0])
-                if caso == "gaussiano" or caso == "h_pass" or caso == "laplaciano" or caso == "Prewitt Hx" or caso == "Prewitt Hy Hx" or caso == "Sobel Hx" or caso == "Sobel Hy":
+                if vet_kernel.lower() == "gaussiano" or vet_kernel.lower() == "h_pass" or vet_kernel.lower() == "laplaciano" or vet_kernel.lower() == "prewitthx" or vet_kernel.lower() == "prewitthyhx" or vet_kernel.lower() == "sobelhx" or vet_kernel.lower() == "sobelhy":
                     if conv < 0:
                         conv = 0
                     if conv > 255:
