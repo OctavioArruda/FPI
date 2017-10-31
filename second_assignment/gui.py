@@ -789,14 +789,14 @@ class MyFrame(Frame):
         elif vet_kernel.lower() == "prewitthx":
 
             kernel[0][0] = -1
+            kernel[1][0] = 0
+            kernel[2][0] = 1
             kernel[1][0] = -1
+            kernel[1][1] = 0
+            kernel[1][2] = 1
             kernel[2][0] = -1
-            kernel[1][0] = -1
-            kernel[1][1] = 8
-            kernel[1][2] = -1
-            kernel[2][0] = -1
-            kernel[2][1] = -1
-            kernel[2][2] = -1
+            kernel[2][1] = 0
+            kernel[2][2] = 1
 
         elif vet_kernel.lower() == "prewitthyhx":
 
